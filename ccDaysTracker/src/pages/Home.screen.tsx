@@ -7,8 +7,10 @@ import {
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
-
-const HomeScreen = () => {
+type Props = {
+    navigation: any;
+};
+const HomeScreen = ({ navigation }: Props) => {
     const [index, setIndex] = React.useState(0);
 
     return (
@@ -23,7 +25,7 @@ const HomeScreen = () => {
             </TabView>
             <FAB
                 visible={true}
-                onPress={() => { }}
+                onPress={() => { navigation.navigate('AddEntity') }}
                 placement="right"
                 title="Add Entry"
                 icon={{ name: 'edit', color: 'white' }}

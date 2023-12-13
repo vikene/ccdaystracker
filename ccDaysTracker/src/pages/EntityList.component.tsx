@@ -1,7 +1,9 @@
 import { Avatar, ListItem, Text } from "@rneui/themed";
 import { FlatList, View } from "react-native"
-
-const EntityList = () => {
+type Props = {
+    navigation: any;
+};
+const EntityList = ({ navigation }: Props) => {
     const list = [
         {
             days: 20,
@@ -54,7 +56,7 @@ const EntityList = () => {
     ];
     const keyExtractor = (item: any, index: number) => index.toString();
     const renderItem = ({ item }: any) => (
-        <ListItem>
+        <ListItem onPress={() => navigation.navigate('ViewEntry')}>
             <ListItem.Content>
                 <View
                     style={{

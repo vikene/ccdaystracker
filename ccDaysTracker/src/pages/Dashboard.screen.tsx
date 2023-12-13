@@ -7,8 +7,10 @@ import {
 } from 'react-native';
 import EntityList from './EntityList.component';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const DashboardScreen = () => {
+type Props = {
+    navigation: any;
+};
+const DashboardScreen = ({ navigation }: Props) => {
     return (
         <>
             <ScrollView
@@ -143,7 +145,7 @@ const DashboardScreen = () => {
                         Travel logs
                     </Text>
                     <SafeAreaView>
-                        <EntityList />
+                        <EntityList navigation={navigation} />
                     </SafeAreaView>
                 </View>
             </ScrollView>

@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }: Props) => {
         <>
             <TabView value={index} onChange={setIndex} animationType="spring">
                 <TabView.Item style={{ width: '100%' }}>
-                    <DashboardScreen />
+                    <DashboardScreen navigation={navigation} />
                 </TabView.Item>
                 <TabView.Item style={{ width: '100%' }}>
                     <SettingsScreen />

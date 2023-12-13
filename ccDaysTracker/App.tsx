@@ -23,6 +23,7 @@ import LoginScreen from './src/pages/Login.screen';
 import RegisterScreen from './src/pages/Register.screen';
 import HomeScreen from './src/pages/Home.screen';
 import AddEntityScreen from './src/pages/AddEntity.screen';
+import ViewEntryScreen from './src/pages/ViewEntry.screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
         <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
+        <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

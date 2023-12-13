@@ -1,4 +1,4 @@
-import { Button, Divider, Image, Input, Tab, TabView } from '@rneui/themed';
+import { Button, Divider, FAB, Image, Input, Tab, TabView } from '@rneui/themed';
 import React from 'react';
 import {
     ScrollView,
@@ -21,6 +21,19 @@ const HomeScreen = () => {
                     <SettingsScreen />
                 </TabView.Item>
             </TabView>
+            <FAB
+                visible={true}
+                onPress={() => { }}
+                placement="right"
+                title="Add Entry"
+                icon={{ name: 'edit', color: 'white' }}
+                color="red"
+                style={{
+                    position: 'absolute',
+                    bottom: 60,
+                    right: 10,
+                }}
+            />
             <Tab
                 value={index}
                 onChange={(e) => setIndex(e)}

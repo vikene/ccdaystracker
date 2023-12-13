@@ -5,6 +5,7 @@ import {
     Text,
     View,
 } from 'react-native';
+import EntityList from './EntityList.component';
 
 const DashboardScreen = () => {
     return (
@@ -125,7 +126,12 @@ const DashboardScreen = () => {
                         </Text>
                     </View>
                 </View>
-                <View>
+                <View
+                    style={{
+                        flex: 1,
+                        gap: 20,
+                    }}
+                >
                     <Text style={{
                         fontSize: 20,
                         fontWeight: '600',
@@ -135,6 +141,7 @@ const DashboardScreen = () => {
                     >
                         Travel logs
                     </Text>
+                    <EntityList />
                 </View>
             </ScrollView>
         </>

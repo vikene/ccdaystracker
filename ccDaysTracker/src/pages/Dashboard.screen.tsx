@@ -57,7 +57,7 @@ const DashboardScreen = ({ navigation }: Props) => {
                             color: 'white',
                             fontSize: 20,
                         }}>
-                            To be elidgible for Canadian Citizenship
+                            To be eligible for Canadian Citizenship
                         </Text>
                     </View>
                 </View>

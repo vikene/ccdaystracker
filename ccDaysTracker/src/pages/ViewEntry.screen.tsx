@@ -24,15 +24,21 @@ const ViewEntryScreen = ({ navigation }: Props) => {
                     height: Dimensions.get("window").height
                 }}>
                     <View style={{
-                        flex: 0.2,
+                        flex: 0.1,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        height: 200,
+                        width: Dimensions.get("window").width,
+                        flexDirection: 'row',
                     }}>
                         <Icon
                             name="arrow-left"
                             size={30}
                             color="black"
+                            style={{
+                                position: 'absolute',
+                                left: 10,
+                            }}
+                            onPress={() => { navigation.goBack() }}
                         />
                         <Text style={{
                             fontSize: 26,
@@ -43,12 +49,13 @@ const ViewEntryScreen = ({ navigation }: Props) => {
                         </Text>
                     </View>
                     <View style={{
-                        flex: 0.8,
+                        flex: 0.9,
                         justifyContent: 'flex-start',
                         alignItems: 'flex-start',
                         alignSelf: 'flex-start',
                         marginLeft: 15,
                         gap: 15,
+                        marginTop: 30,
                     }}>
                         <Text
                             style={{

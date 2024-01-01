@@ -24,6 +24,7 @@ import RegisterScreen from './src/pages/Register.screen';
 import HomeScreen from './src/pages/Home.screen';
 import AddEntityScreen from './src/pages/AddEntity.screen';
 import ViewEntryScreen from './src/pages/ViewEntry.screen';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,17 +34,20 @@ type SectionProps = PropsWithChildren<{
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const queryClient = new QueryClient();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
-        <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
-        <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
-        <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry' }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
+          <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
+          <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 

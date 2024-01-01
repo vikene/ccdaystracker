@@ -7,12 +7,29 @@ import {
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
+import { QueryClient, useQuery } from 'react-query';
+import agent from '../../agent';
+
 type Props = {
     navigation: any;
 };
 const HomeScreen = ({ navigation }: Props) => {
     const [index, setIndex] = React.useState(0);
-
+    const { isLoading, isError, status, error, data } = useQuery('authenticationState', () => {
+        return agent.Authentication.current();
+    });
+    if (isLoading) return <Text>Loading...</Text>;
+    if (isError) {
+        if (error instanceof Error) {
+            let message = JSON.parse(error.message);
+            if (message["message"] === 'Unauthorized') {
+                navigation.navigate('Login');
+            }
+            return <Text>
+                Error: {error.message}
+            </Text>;
+        }
+    }
     return (
         <>
             <TabView value={index} onChange={setIndex} animationType="spring">

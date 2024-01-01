@@ -1,4 +1,4 @@
-import { Button, Divider, FAB, Image, Input, Tab, TabView } from '@rneui/themed';
+import { Button, Divider, FAB, Image, Input, SpeedDial, Tab, TabView } from '@rneui/themed';
 import React from 'react';
 import {
     ScrollView,
@@ -7,15 +7,17 @@ import {
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
-import { QueryClient, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import agent from '../../agent';
+
 
 type Props = {
     navigation: any;
 };
 const HomeScreen = ({ navigation }: Props) => {
     const [index, setIndex] = React.useState(0);
-    const { isLoading, isError, status, error, data } = useQuery('authenticationState', () => {
+    const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
+    const { isLoading, isError, error } = useQuery('authenticationState', () => {
         return agent.Authentication.current();
     });
     if (isLoading) return <Text>Loading...</Text>;
@@ -40,19 +42,27 @@ const HomeScreen = ({ navigation }: Props) => {
                     <SettingsScreen />
                 </TabView.Item>
             </TabView>
-            <FAB
-                visible={true}
-                onPress={() => { navigation.navigate('AddEntity') }}
+            <SpeedDial
+                isOpen={speedDialOpen}
+                onOpen={() => setSpeedDialOpen(!speedDialOpen)}
+                onClose={() => setSpeedDialOpen(!speedDialOpen)}
+                openIcon={{ name: 'close', color: '#fff' }}
+                icon={{ name: 'add', color: 'white' }}
                 placement="right"
-                title="Add Entry"
-                icon={{ name: 'edit', color: 'white' }}
-                color="red"
                 style={{
-                    position: 'absolute',
-                    bottom: 60,
-                    right: 10,
+                    marginBottom: 60,
                 }}
-            />
+            >
+                <SpeedDial.Action
+                    icon={{ name: 'flight', color: 'white' }}
+                    title="Record Arrival"
+                    onPress={() => navigation.navigate('RecordArrival')}
+                />
+                <SpeedDial.Action
+                    title="Record Departure"
+                    icon={{ name: 'rotate-right', color: 'white' }}
+                    onPress={() => navigation.navigate('RecordDeparture')} />
+            </SpeedDial>
             <Tab
                 value={index}
                 onChange={(e) => setIndex(e)}

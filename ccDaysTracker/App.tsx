@@ -25,6 +25,8 @@ import HomeScreen from './src/pages/Home.screen';
 import AddEntityScreen from './src/pages/AddEntity.screen';
 import ViewEntryScreen from './src/pages/ViewEntry.screen';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import RecordArrivalScreen from './src/pages/RecordArrival.screen';
+import RecordDepartureScreen from './src/pages/RecordDeparture.screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,8 +42,10 @@ function App(): React.JSX.Element {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
           <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
+          <Stack.Screen name="RecordArrival" component={RecordArrivalScreen} options={{ title: 'Add Arrival Record', headerShown: true }} />
+          <Stack.Screen name="RecordDeparture" component={RecordDepartureScreen} options={{ title: 'Add Departure Record', headerShown: true }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
           <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
           <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry' }} />

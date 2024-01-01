@@ -1,6 +1,8 @@
 import _superagent, { Request, Response } from 'superagent';
 import superagentPromise from "superagent-promise";
 import { SignupDto } from './src/DTOs/incoming/signup.dto';
+import { ArrivalLogDto } from './src/DTOs/incoming/arrivalLog.dto';
+import { DepartureLogDto } from './src/DTOs/incoming/departureLog.dto';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 const API_ROOT = "http://localhost:3000";
@@ -53,11 +55,15 @@ const Authentication = {
 };
 
 const TravelLog = {
-
+    getEligibleDays: () => requests.get("/travel-log/eligible-days"),
+    getTravelLog: () => requests.get("/travel-log"),
+    postArrivalLog: (arrivalLog: ArrivalLogDto) => requests.post("/travel-log/arrival", arrivalLog),
+    postDepartureLog: (departureLog: DepartureLogDto) => requests.post("/travel-log/departure", departureLog),
 };
 
 var _export_agent = {
     Authentication,
+    TravelLog,
     setToken: (_token: string) => { token = _token; }
 };
 

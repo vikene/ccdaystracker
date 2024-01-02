@@ -7,11 +7,14 @@ import {
     Text,
     View,
 } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 type Props = {
     navigation: any;
 };
 const ViewEntryScreen = ({ navigation }: Props) => {
+    const route: RouteProp<{ params: { TripUniqueId: string } }, 'params'> = useRoute();
+    const TripUniqueId: string = route.params.TripUniqueId;
     return (
         <>
             <ScrollView

@@ -1,13 +1,15 @@
-import { Button, Divider, FAB, Image, Input, SpeedDial, Tab, TabView } from '@rneui/themed';
+import { Button, Dialog, Divider, FAB, Image, Input, SpeedDial, Tab, TabView } from '@rneui/themed';
 import React from 'react';
 import {
+    Alert,
+    BackHandler,
     ScrollView,
     Text,
     View,
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 
 
@@ -15,21 +17,35 @@ type Props = {
     navigation: any;
 };
 const HomeScreen = ({ navigation }: Props) => {
+    const queryClient = useQueryClient();
     const [index, setIndex] = React.useState(0);
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const { isLoading, isError, error } = useQuery('authenticationState', () => {
         return agent.Authentication.current();
     });
-    if (isLoading) return <Text>Loading...</Text>;
+    if (isLoading) return (
+        <Dialog isVisible={true}>
+            <Dialog.Loading />
+        </Dialog>
+    );
     if (isError) {
         if (error instanceof Error) {
-            let message = JSON.parse(error.message);
-            if (message["message"] === 'Unauthorized') {
-                navigation.navigate('Login');
+            try {
+                let message = JSON.parse(error.message);
+                if (message["message"] === 'Unauthorized') {
+                    navigation.navigate('Login');
+                }
+                return <Text>
+                    Error: {error.message}
+                </Text>;
             }
-            return <Text>
-                Error: {error.message}
-            </Text>;
+            catch (e) {
+                Alert.alert('Error, unable to reach server. Will retry in 5 seconds.');
+                setTimeout(() => {
+                    queryClient.invalidateQueries('authenticationState');
+                }, 5000);
+            }
+
         }
     }
     return (

@@ -17,9 +17,16 @@ const EntityList = ({ navigation }: Props) => {
     if (entityListQuery.isSuccess) {
         let data = JSON.parse(JSON.stringify(entityListQuery.data));
         let events = data["Events"];
-        const keyExtractor = (item: any, index: number) => index.toString();
+        const keyExtractor = (item: any, index: number) => {
+            return item.TripUniqueId;
+        };
+
+        const onEntityItemPress = (TripUniqueId: string) => {
+            console.log(TripUniqueId);
+            navigation.navigate('ViewEntry', { TripUniqueId: TripUniqueId });
+        }
         const renderItem = ({ item }: any) => (
-            <ListItem onPress={() => navigation.navigate('ViewEntry')}>
+            <ListItem onPress={() => onEntityItemPress(item.TripUniqueId)}>
                 <ListItem.Content>
                     <View
                         style={{
@@ -38,7 +45,7 @@ const EntityList = ({ navigation }: Props) => {
                             alignItems: 'flex-start',
                             width: '100%',
                         }}>
-                            <Text style={{ fontSize: 20, fontWeight: '600' }}>Days: {item.days}</Text>
+                            <Text style={{ fontSize: 20, fontWeight: '600' }}>Days: {item.Days}</Text>
                             <Text style={{ fontSize: 15, fontWeight: '400', alignSelf: "flex-end", color: "#333" }}>Status: {(item.IsPermanentResident === true) ? "PR" : "TRV"}</Text>
                         </View>
                         <Text style={{ fontSize: 15, fontWeight: '400' }}>Arrived: {item.ArrivalInCanadaDate}</Text>

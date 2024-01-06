@@ -55,15 +55,21 @@ const Authentication = {
 };
 
 const TravelLog = {
-    getEligibleDays: () => requests.get("/travel-log/eligible-days"),
-    getTravelLog: () => requests.get("/travel-log"),
+    getEligibleDays: () => requests.get("/travel-log/dashboard/eligible-days"),
+    getTravelLogs: () => requests.get("/travel-log"),
+    getTravelLog: (travelLogId: string) => requests.get(`/travel-log/${travelLogId}`),
     postArrivalLog: (arrivalLog: ArrivalLogDto) => requests.post("/travel-log/arrival", arrivalLog),
     postDepartureLog: (departureLog: DepartureLogDto) => requests.post("/travel-log/departure", departureLog),
+};
+
+const User = {
+    getCurrentUserInfo: () => requests.get("/user"),
 };
 
 var _export_agent = {
     Authentication,
     TravelLog,
+    User,
     setToken: (_token: string) => { token = _token; }
 };
 

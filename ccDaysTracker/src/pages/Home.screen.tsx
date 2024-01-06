@@ -55,7 +55,7 @@ const HomeScreen = ({ navigation }: Props) => {
                     <DashboardScreen navigation={navigation} />
                 </TabView.Item>
                 <TabView.Item style={{ width: '100%' }}>
-                    <SettingsScreen />
+                    <SettingsScreen navigation={navigation} />
                 </TabView.Item>
             </TabView>
             <SpeedDial

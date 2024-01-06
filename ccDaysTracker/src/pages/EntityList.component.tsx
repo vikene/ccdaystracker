@@ -6,7 +6,7 @@ type Props = {
     navigation: any;
 };
 const EntityList = ({ navigation }: Props) => {
-    const entityListQuery = useQuery('entityList', () => agent.TravelLog.getTravelLog());
+    const entityListQuery = useQuery('entityList', () => agent.TravelLog.getTravelLogs());
     if (entityListQuery.isLoading) {
         return (
             <Dialog isVisible={true} onBackdropPress={() => { }}>

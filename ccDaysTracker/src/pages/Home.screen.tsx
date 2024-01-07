@@ -12,7 +12,6 @@ import SettingsScreen from './Settings.screen';
 import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 
-
 type Props = {
     navigation: any;
 };
@@ -23,6 +22,7 @@ const HomeScreen = ({ navigation }: Props) => {
     const { isLoading, isError, error } = useQuery('authenticationState', () => {
         return agent.Authentication.current();
     });
+
     if (isLoading) return (
         <Dialog isVisible={true}>
             <Dialog.Loading />

@@ -9,6 +9,7 @@ import {
 import { Mutation, useMutation, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { LoginDto } from '../DTOs/incoming/login.dto';
+
 type Props = {
     navigation: any;
 };
@@ -56,11 +57,13 @@ const LoginScreen = ({ navigation }: Props) => {
     }
     if (loginMutation.isSuccess) {
         let data = JSON.parse(JSON.stringify(loginMutation.data));
-        agent.setToken(data["token"]);
+        let tokenString: string = data["token"];
+        agent.setToken(tokenString);
         loginMutation.reset();
         queryClient.invalidateQueries('authenticationState');
         navigation.navigate('Home');
     }
+
     return (
         <ScrollView
             contentInsetAdjustmentBehavior="automatic"

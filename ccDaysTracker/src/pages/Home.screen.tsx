@@ -11,12 +11,19 @@ import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
 import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 
+const storage = new MMKVLoader().initialize();
 type Props = {
     navigation: any;
 };
 const HomeScreen = ({ navigation }: Props) => {
     const queryClient = useQueryClient();
+    const [authToken, setAuthToken] = useMMKVStorage('authenticationToken', storage, '');
+    console.log(authToken);
+    if (authToken !== '') {
+        agent.setToken(authToken!);
+    }
     const [index, setIndex] = React.useState(0);
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const { isLoading, isError, error } = useQuery('authenticationState', () => {

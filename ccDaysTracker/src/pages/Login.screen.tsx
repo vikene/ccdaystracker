@@ -9,12 +9,15 @@ import {
 import { Mutation, useMutation, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { LoginDto } from '../DTOs/incoming/login.dto';
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 
+const storage = new MMKVLoader().initialize();
 type Props = {
     navigation: any;
 };
 const LoginScreen = ({ navigation }: Props) => {
     const queryClient = useQueryClient();
+    const [authToken, setAuthToken] = useMMKVStorage('authenticationToken', storage, '');
     const loginMutation = useMutation({
         mutationFn: (loginDto: LoginDto) => agent.Authentication.login(loginDto.email, loginDto.password),
     })
@@ -59,9 +62,14 @@ const LoginScreen = ({ navigation }: Props) => {
         let data = JSON.parse(JSON.stringify(loginMutation.data));
         let tokenString: string = data["token"];
         agent.setToken(tokenString);
+        setAuthToken(tokenString);
         loginMutation.reset();
         queryClient.invalidateQueries('authenticationState');
         navigation.navigate('Home');
+    }
+    if (authToken !== '') {
+        navigation.navigate('Home');
+        agent.setToken(authToken);
     }
 
     return (

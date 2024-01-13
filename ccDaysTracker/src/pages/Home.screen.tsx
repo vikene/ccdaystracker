@@ -20,7 +20,6 @@ type Props = {
 const HomeScreen = ({ navigation }: Props) => {
     const queryClient = useQueryClient();
     const [authToken, setAuthToken] = useMMKVStorage('authenticationToken', storage, '');
-    console.log(authToken);
     if (authToken !== '') {
         agent.setToken(authToken!);
     }

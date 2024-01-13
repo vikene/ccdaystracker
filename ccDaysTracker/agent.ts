@@ -3,6 +3,7 @@ import superagentPromise from "superagent-promise";
 import { SignupDto } from './src/DTOs/incoming/signup.dto';
 import { ArrivalLogDto } from './src/DTOs/incoming/arrivalLog.dto';
 import { DepartureLogDto } from './src/DTOs/incoming/departureLog.dto';
+import { UserInfoDto } from './src/DTOs/incoming/userInfo.dto';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 const API_ROOT = "http://localhost:3000";
@@ -64,6 +65,7 @@ const TravelLog = {
 
 const User = {
     getCurrentUserInfo: () => requests.get("/user"),
+    updateUserInfo: (userInfo: UserInfoDto) => requests.put("/user", userInfo),
 };
 
 var _export_agent = {

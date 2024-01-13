@@ -2,6 +2,7 @@ import { Avatar, Dialog, ListItem, Text } from "@rneui/themed";
 import { FlatList, View } from "react-native";
 import agent from "../../agent";
 import { useQuery } from "react-query";
+import { SafeAreaView } from "react-native-safe-area-context";
 type Props = {
     navigation: any;
 };
@@ -58,11 +59,13 @@ const EntityList = ({ navigation }: Props) => {
         );
 
         return (
-            <FlatList
-                data={events}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-            />
+            <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    data={events}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                />
+            </SafeAreaView>
         )
     }
 }

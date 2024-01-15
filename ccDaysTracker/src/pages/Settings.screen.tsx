@@ -68,6 +68,7 @@ const SettingsScreen = ({ navigation }: Props) => {
     if (userInfoMutation.isSuccess) {
         queryClient.invalidateQueries('userInfo');
         userInfoMutation.reset();
+        setIsThereChanges(false);
     }
     if (settingsQuery.isLoading || userInfoMutation.isLoading) {
         return (
@@ -153,6 +154,9 @@ const SettingsScreen = ({ navigation }: Props) => {
                             </Text>
                             <Switch value={isPermanentResident}
                                 onValueChange={(value) => {
+                                    if (isThereChanges === false) {
+                                        setIsThereChanges(true);
+                                    }
                                     setIsPermanentResident(value);
                                 }}
                             />

@@ -48,7 +48,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="RecordDeparture" component={RecordDepartureScreen} options={{ title: 'Add Departure Record', headerShown: true }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
           <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
-          <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry' }} />
+          <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry', headerShown: true }} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

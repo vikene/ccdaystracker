@@ -4,7 +4,7 @@ import { Alert, Dimensions, ScrollView, Text, View } from "react-native";
 import DatePicker from "react-native-date-picker";
 import { DepartureLogDto } from "../DTOs/incoming/departureLog.dto";
 import agent from "../../agent";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 const formatDate = (dateValue: Date) => {
     return dateValue.getFullYear() + "-" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "-" + ("0" + dateValue.getDate()).slice(-2)
 }
@@ -12,6 +12,7 @@ type Props = {
     navigation: any;
 };
 const RecordDepartureScreen = ({ navigation }: Props) => {
+    let queryClient = useQueryClient();
     const [dateDeparted, setDepartedDate] = useState(new Date())
     const [openDeparted, setDepartedOpen] = useState(false)
     const [dateValue, setDateValue] = useState(formatDate(dateDeparted))
@@ -41,6 +42,8 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
     }
     if (recordDepartureMutation.isSuccess) {
         Alert.alert('Departure recorded');
+        queryClient.invalidateQueries('entityList');
+        queryClient.invalidateQueries('eligibleDays');
         recordDepartureMutation.reset();
         navigation.navigate('Home');
     }
@@ -83,6 +86,7 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
                         date={dateDeparted}
                         onConfirm={handleConfirmDeparted}
                         onCancel={handleCancelDeparted}
+                        mode="date"
                     />
                     <Input
                         placeholder="Italy"
@@ -101,7 +105,7 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
                         flexDirection: 'row',
                     }}>
                         <Button
-                            title="Record Arrival"
+                            title="Record Departure"
                             buttonStyle={{
                                 backgroundColor: 'black',
                                 borderWidth: 2,

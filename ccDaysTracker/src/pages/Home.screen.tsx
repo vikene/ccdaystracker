@@ -2,10 +2,7 @@ import { Button, Dialog, Divider, FAB, Image, Input, SpeedDial, Tab, TabView } f
 import React from 'react';
 import {
     Alert,
-    BackHandler,
-    ScrollView,
-    Text,
-    View,
+    Text
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
@@ -78,12 +75,18 @@ const HomeScreen = ({ navigation }: Props) => {
                 <SpeedDial.Action
                     icon={{ name: 'flight', color: 'white' }}
                     title="Record Arrival"
-                    onPress={() => navigation.navigate('RecordArrival')}
+                    onPress={() => {
+                        setSpeedDialOpen(!speedDialOpen);
+                        navigation.navigate('RecordArrival');
+                    }}
                 />
                 <SpeedDial.Action
                     title="Record Departure"
                     icon={{ name: 'rotate-right', color: 'white' }}
-                    onPress={() => navigation.navigate('RecordDeparture')} />
+                    onPress={() => {
+                        setSpeedDialOpen(!speedDialOpen);
+                        navigation.navigate('RecordDeparture')
+                    }} />
             </SpeedDial>
             <Tab
                 value={index}
@@ -97,12 +100,12 @@ const HomeScreen = ({ navigation }: Props) => {
                 <Tab.Item
                     title="Home"
                     titleStyle={{ fontSize: 12 }}
-                    icon={{ name: 'timer', type: 'ionicon', color: 'white' }}
+                    icon={{ name: 'home', type: 'ionicon', color: 'white' }}
                 />
                 <Tab.Item
                     title="Settings"
                     titleStyle={{ fontSize: 12 }}
-                    icon={{ name: 'heart', type: 'ionicon', color: 'white' }}
+                    icon={{ name: 'settings', type: 'ionicon', color: 'white' }}
                 />
             </Tab>
         </>

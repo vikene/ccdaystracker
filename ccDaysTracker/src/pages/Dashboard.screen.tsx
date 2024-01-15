@@ -1,20 +1,29 @@
 import { Button, Divider, Image, Input, Tab, TabView } from '@rneui/themed';
 import React from 'react';
 import {
+    RefreshControl,
     ScrollView,
     Text,
     View,
 } from 'react-native';
 import EntityList from './EntityList.component';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { Dialog } from '@rneui/base';
 type Props = {
     navigation: any;
 };
 const DashboardScreen = ({ navigation }: Props) => {
-
+    const [refreshing, setRefreshing] = React.useState(false);
+    const queryClient = useQueryClient();
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        eligibleDaysQuery.refetch()
+            .then(() => {
+                setRefreshing(false);
+            });
+        queryClient.invalidateQueries(['entityList']);
+    }, []);
     const eligibleDaysQuery = useQuery('eligibleDays', () => agent.TravelLog.getEligibleDays());
     if (eligibleDaysQuery.isLoading) {
         return (
@@ -25,11 +34,16 @@ const DashboardScreen = ({ navigation }: Props) => {
     }
     if (eligibleDaysQuery.isSuccess) {
         let data = JSON.parse(JSON.stringify(eligibleDaysQuery.data));
-        console.log(data);
         return (
             <>
                 <ScrollView
                     contentInsetAdjustmentBehavior="automatic"
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
                 >
                     <View style={{
                         flex: 1,
@@ -147,7 +161,6 @@ const DashboardScreen = ({ navigation }: Props) => {
                     <View
                         style={{
                             flex: 1,
-                            gap: 20,
                         }}
                     >
                         <Text style={{
@@ -159,9 +172,7 @@ const DashboardScreen = ({ navigation }: Props) => {
                         >
                             Travel logs
                         </Text>
-                        <SafeAreaView>
-                            <EntityList navigation={navigation} />
-                        </SafeAreaView>
+                        <EntityList navigation={navigation} />
                     </View>
                 </ScrollView>
             </>

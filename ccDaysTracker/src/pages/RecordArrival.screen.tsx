@@ -4,7 +4,8 @@ import { Dimensions, ScrollView, Text, View, Alert } from "react-native";
 import DatePicker from "react-native-date-picker";
 import agent from "../../agent";
 import { ArrivalLogDto } from "../DTOs/incoming/arrivalLog.dto";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { ERROR_CODES } from "../ErrorCodes/errorCodes";
 type Props = {
     navigation: any;
 };
@@ -12,9 +13,11 @@ const formatDate = (dateValue: Date) => {
     return dateValue.getFullYear() + "-" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "-" + ("0" + dateValue.getDate()).slice(-2)
 }
 const RecordArrivalScreen = ({ navigation }: Props) => {
+    const queryClient = useQueryClient();
     const [dateArrived, setArrivedDate] = useState(new Date())
     const [openArrived, setArrivedOpen] = useState(false)
     const [dateValue, setDateValue] = useState(formatDate(dateArrived))
+    const [isPermanentResident, setIsPermanentResident] = useState(false)
     const handleConfirmArrived = (date: Date) => {
         setArrivedDate(date)
         setDateValue(formatDate(date))
@@ -35,10 +38,19 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
     }
     if (recordArrivalMutation.isError) {
         let message = JSON.parse(JSON.stringify(recordArrivalMutation.error));
-        Alert.alert(message.message);
+        let messageBody = message.response.body;
+        if (messageBody.appStatusCode === ERROR_CODES.NoDepartureBetweenTwoArrivalEventException) {
+            // two arrival events without a departure event
+            Alert.alert(messageBody.message);
+            recordArrivalMutation.reset();
+        }
     }
     if (recordArrivalMutation.isSuccess) {
         Alert.alert('Arrival recorded');
+        queryClient.invalidateQueries([
+            'entityList'
+        ]);
+        queryClient.invalidateQueries('eligibleDays');
         recordArrivalMutation.reset();
         navigation.navigate('Home');
     }
@@ -47,10 +59,9 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
             Alert.alert('Please enter a date');
             return;
         }
-        console.log(dateValue);
         let arrivalDate: ArrivalLogDto = {
             ArrivalInCanadaDate: dateValue,
-            IsPermanentResident: true,
+            IsPermanentResident: isPermanentResident,
         }
         recordArrivalMutation.mutate(arrivalDate);
     }
@@ -82,6 +93,7 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
                         date={dateArrived}
                         onConfirm={handleConfirmArrived}
                         onCancel={handleCancelArrived}
+                        mode="date"
                     />
                     <View
                         style={{
@@ -99,7 +111,7 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
                         }}>
                             Permanant resident
                         </Text>
-                        <Switch />
+                        <Switch value={isPermanentResident} onValueChange={(status) => setIsPermanentResident(status)} />
                     </View>
                     <View style={{
                         flex: 1,

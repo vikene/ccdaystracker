@@ -61,6 +61,7 @@ const TravelLog = {
     getTravelLog: (travelLogId: string) => requests.get(`/travel-log/${travelLogId}`),
     postArrivalLog: (arrivalLog: ArrivalLogDto) => requests.post("/travel-log/arrival", arrivalLog),
     postDepartureLog: (departureLog: DepartureLogDto) => requests.post("/travel-log/departure", departureLog),
+    deleteTravelLog: (travelLogId: string) => requests.del(`/travel-log/${travelLogId}`),
 };
 
 const User = {

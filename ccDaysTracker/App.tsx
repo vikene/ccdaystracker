@@ -22,7 +22,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/pages/Login.screen';
 import RegisterScreen from './src/pages/Register.screen';
 import HomeScreen from './src/pages/Home.screen';
-import AddEntityScreen from './src/pages/AddEntity.screen';
+import EditEntityScreen from './src/pages/EditEntity.screen';
 import ViewEntryScreen from './src/pages/ViewEntry.screen';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import RecordArrivalScreen from './src/pages/RecordArrival.screen';
@@ -47,7 +47,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="RecordArrival" component={RecordArrivalScreen} options={{ title: 'Add Arrival Record', headerShown: true }} />
           <Stack.Screen name="RecordDeparture" component={RecordDepartureScreen} options={{ title: 'Add Departure Record', headerShown: true }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
-          <Stack.Screen name="AddEntity" component={AddEntityScreen} options={{ title: 'Add Entity' }} />
+          <Stack.Screen name="EditEntity" component={EditEntityScreen} options={{ title: 'Edit Entity', headerShown: true }} />
           <Stack.Screen name="ViewEntry" component={ViewEntryScreen} options={{ title: 'View Entry', headerShown: true }} />
         </Stack.Navigator>
       </NavigationContainer>

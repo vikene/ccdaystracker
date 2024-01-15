@@ -1,3 +1,4 @@
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { Button, Divider, FAB, Image, Input, Switch, Tab, TabView } from '@rneui/themed';
 import React, { useState } from 'react';
 import {
@@ -11,8 +12,9 @@ import DatePicker from 'react-native-date-picker';
 type Props = {
     navigation: any;
 };
-const AddEntityScreen = ({ navigation }: Props) => {
-    const [dateArrived, setArrivedDate] = useState(new Date())
+const EditEntityScreen = ({ navigation }: Props) => {
+    const route: RouteProp<{ params: { TripUniqueId: string, data: any } }, 'params'> = useRoute();
+    const [dateArrived, setArrivedDate] = useState(new Date(Date.parse(route.params.data.ArrivalInCanadaDate)));
     const [openArrived, setArrivedOpen] = useState(false)
     const handleConfirmArrived = (date: Date) => {
         setArrivedDate(date)
@@ -22,8 +24,12 @@ const AddEntityScreen = ({ navigation }: Props) => {
         setArrivedOpen(false)
     }
 
-    const [dateDeparted, setDepartedDate] = useState(new Date())
+    const [dateDeparted, setDepartedDate] = useState(new Date(Date.parse(route.params.data.DepartedCanadaOnDate)))
     const [openDeparted, setDepartedOpen] = useState(false)
+    const [destination, setDestination] = useState(route.params.data.Destination)
+    const [reason, setReason] = useState(route.params.data.ReasonForTravel)
+    const [isPermanentResident, setIsPermanentResident] = useState(route.params.data.IsPermanentResident)
+    const [tripUniqueId, _] = useState(route.params.TripUniqueId)
     const handleConfirmDeparted = (date: Date) => {
         setDepartedDate(date)
         setDepartedOpen(false)
@@ -38,20 +44,11 @@ const AddEntityScreen = ({ navigation }: Props) => {
             >
                 <View style={{
                     flex: 1,
-                    justifyContent: 'center',
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                     marginTop: 30,
                     height: Dimensions.get("window").height
                 }}>
-                    <Text style={{
-                        fontSize: 26,
-                        fontWeight: '600',
-                        textAlign: 'center',
-                        marginBottom: 30,
-                    }}>
-                        Add Entry
-                    </Text>
-
                     <Input
                         placeholder="mm/dd/yyyy"
                         label="Arrived in Canada"
@@ -59,6 +56,7 @@ const AddEntityScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setArrivedOpen(true)
                         }}
+                        value={dateArrived.toDateString()}
                     />
                     <DatePicker
                         modal
@@ -74,6 +72,7 @@ const AddEntityScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setDepartedOpen(true)
                         }}
+                        value={dateDeparted.toDateString()}
                     />
                     <DatePicker
                         modal
@@ -85,15 +84,18 @@ const AddEntityScreen = ({ navigation }: Props) => {
                     <Input
                         placeholder="Italy"
                         label="Destination"
+                        value={destination}
+                        onChangeText={(text) => setDestination(text)}
                     />
                     <Input
                         placeholder="Touring"
                         label="Reason for travel"
-
+                        value={reason}
+                        onChangeText={(text) => setReason(text)}
                     />
                     <View
                         style={{
-                            flex: 1,
+                            flex: 0.25,
                             flexDirection: 'row',
                             alignSelf: 'flex-start',
                             marginLeft: 15,
@@ -107,20 +109,25 @@ const AddEntityScreen = ({ navigation }: Props) => {
                         }}>
                             Permanant resident
                         </Text>
-                        <Switch />
+                        <Switch
+                            value={isPermanentResident}
+                            onValueChange={(value) => setIsPermanentResident(value)}
+                        />
                     </View>
-                    <FAB
-                        visible={true}
-                        onPress={() => { navigation.navigate('AddEntity') }}
-                        placement="right"
-                        title="Add Entry"
-                        icon={{ name: 'edit', color: 'white' }}
-                        color="red"
-                        style={{
-                            position: 'absolute',
-                            bottom: 60,
-                            right: 10,
+                    <Button
+                        title="Edit Trip"
+                        buttonStyle={{
+                            backgroundColor: 'black',
+                            borderWidth: 2,
+                            borderColor: 'white',
+                            borderRadius: 30,
                         }}
+                        containerStyle={{
+                            width: 200,
+                            marginHorizontal: 50,
+                            marginVertical: 10,
+                        }}
+                        titleStyle={{ fontWeight: 'bold' }}
                     />
                 </View>
             </ScrollView>
@@ -128,4 +135,4 @@ const AddEntityScreen = ({ navigation }: Props) => {
     );
 }
 
-export default AddEntityScreen;
+export default EditEntityScreen;

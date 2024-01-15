@@ -27,6 +27,9 @@ const ViewEntryScreen = ({ navigation }: Props) => {
     const deleteTripMutation = useMutation('deleteTrip', {
         mutationFn: (travelId: string) => agent.TravelLog.deleteTravelLog(travelId),
     });
+    const EditTravelLog = (tripUniqueId: string, data: any) => {
+        navigation.navigate('EditEntity', { TripUniqueId: tripUniqueId, data: data });
+    }
     if (deleteTripMutation.isLoading) {
         return (
             <Dialog isVisible={true} onBackdropPress={() => { }}>
@@ -159,6 +162,7 @@ const ViewEntryScreen = ({ navigation }: Props) => {
                                         marginVertical: 10,
                                     }}
                                     titleStyle={{ fontWeight: 'bold' }}
+                                    onPress={() => { EditTravelLog(TripUniqueId, viewTripQuery.data) }}
                                 />
                                 <Button
                                     title="Delete Trip"

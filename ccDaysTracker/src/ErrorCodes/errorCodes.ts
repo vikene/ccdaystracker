@@ -1,5 +1,18 @@
 export const ERROR_CODES = {
+    ArrivalEventOverlapsException: 1000,
     NoDepartureBetweenTwoArrivalEventException: 1001,
     TravelLogNotFoundException: 1002,
     UnableToDeleteTravelLogException: 1003,
+    FailedToCreateArrivalEventException: 1004,
+    NoFirstArrivalEventException: 1005,
+    NoArrivalBetweenTwoDepartureEventException: 1006,
+    NoMatchingArrivalEventException: 1007,
+    DepartureEventOverlapsException: 1008,
+    FailedToCreateDepartureEventException: 1009,
+    FailedCreatingUserException: 1010,
+    InCorrectPasswordException: 1011,
+    NoValidAuthStrategyException: 1012,
+    NoValidPasswordStrategyException: 1013,
+    UserAlreadyExistsException: 1014,
+    UserDoesNotExistsException: 1015,
 };

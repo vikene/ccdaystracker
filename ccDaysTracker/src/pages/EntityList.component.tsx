@@ -24,7 +24,6 @@ const EntityList = ({ navigation }: Props) => {
         let events = data["Events"];
 
         const onEntityItemPress = (TripUniqueId: string) => {
-            console.log(TripUniqueId);
             navigation.navigate('ViewEntry', { TripUniqueId: TripUniqueId });
         }
 
@@ -60,10 +59,8 @@ const EntityList = ({ navigation }: Props) => {
                                         </View>
                                         <Text style={{ fontSize: 15, fontWeight: '400' }}>Arrived: {item.ArrivalInCanadaDate}</Text>
                                         <Text style={{ fontSize: 15, fontWeight: '400' }}>Departed: {item.DepartedCanadaOnDate}</Text>
-
                                     </View>
                                 </TouchableOpacity>
-
                             </>);
                     })
                 }

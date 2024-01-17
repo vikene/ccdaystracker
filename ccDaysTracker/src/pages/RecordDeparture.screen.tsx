@@ -5,6 +5,7 @@ import DatePicker from "react-native-date-picker";
 import { DepartureLogDto } from "../DTOs/incoming/departureLog.dto";
 import agent from "../../agent";
 import { useMutation, useQueryClient } from "react-query";
+import { ERROR_CODES } from "../ErrorCodes/errorCodes";
 const formatDate = (dateValue: Date) => {
     return dateValue.getFullYear() + "-" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "-" + ("0" + dateValue.getDate()).slice(-2)
 }
@@ -37,8 +38,24 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
         )
     }
     if (recordDepartureMutation.isError) {
-        let message = JSON.parse(JSON.stringify(recordDepartureMutation.error));
-        Alert.alert(message.message);
+        try {
+            let message = JSON.parse(JSON.stringify(recordDepartureMutation.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.NoArrivalBetweenTwoDepartureEventException) {
+                // two arrival events without a departure event
+                Alert.alert(messageBody.message);
+                recordDepartureMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                recordDepartureMutation.reset();
+                navigation.navigate('Login');
+            }
+        }
+        catch (err) {
+            Alert.alert('Error, unable to reach server. Try again later.');
+            recordDepartureMutation.reset();
+        }
     }
     if (recordDepartureMutation.isSuccess) {
         Alert.alert('Departure recorded');

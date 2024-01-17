@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import agent from "../../agent";
 import { UserInfoDto } from '../DTOs/incoming/userInfo.dto';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+import { ERROR_CODES } from '../ErrorCodes/errorCodes';
 const storage = new MMKVLoader().initialize();
 type Props = {
     navigation: any;
@@ -58,7 +59,9 @@ const SettingsScreen = ({ navigation }: Props) => {
     if (userInfoMutation.isError) {
         try {
             let message = JSON.parse(JSON.stringify(userInfoMutation.error));
-            if (message.message === 'Unauthorized') {
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                userInfoMutation.reset();
                 navigation.navigate('Login');
             }
             return <Text>
@@ -88,7 +91,8 @@ const SettingsScreen = ({ navigation }: Props) => {
     if (settingsQuery.isError) {
         try {
             let message = JSON.parse(JSON.stringify(settingsQuery.error));
-            if (message.message === 'Unauthorized') {
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                 navigation.navigate('Login');
             }
             return <Text>

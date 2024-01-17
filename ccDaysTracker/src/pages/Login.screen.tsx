@@ -10,6 +10,7 @@ import { Mutation, useMutation, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { LoginDto } from '../DTOs/incoming/login.dto';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+import { ERROR_CODES } from '../ErrorCodes/errorCodes';
 
 const storage = new MMKVLoader().initialize();
 type Props = {
@@ -51,11 +52,18 @@ const LoginScreen = ({ navigation }: Props) => {
     }
     if (loginMutation.isError) {
         let error = loginMutation.error as Error;
-        let message = JSON.parse(error.message);
-        if (message["statusCode"] === 401) {
-            Alert.alert('Invalid email or password');
+        try {
+            let message = JSON.parse(JSON.stringify(error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.InCorrectPasswordException) {
+                Alert.alert('Invalid email or password');
+                loginMutation.reset();
+                return;
+            }
+        }
+        catch (e) {
+            Alert.alert('Error, unable to reach server. Try again later.');
             loginMutation.reset();
-            return;
         }
     }
     if (loginMutation.isSuccess) {

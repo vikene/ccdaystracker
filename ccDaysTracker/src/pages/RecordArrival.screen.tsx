@@ -37,13 +37,25 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
         )
     }
     if (recordArrivalMutation.isError) {
-        let message = JSON.parse(JSON.stringify(recordArrivalMutation.error));
-        let messageBody = message.response.body;
-        if (messageBody.appStatusCode === ERROR_CODES.NoDepartureBetweenTwoArrivalEventException) {
-            // two arrival events without a departure event
-            Alert.alert(messageBody.message);
+        try {
+            let message = JSON.parse(JSON.stringify(recordArrivalMutation.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.NoDepartureBetweenTwoArrivalEventException) {
+                // two arrival events without a departure event
+                Alert.alert(messageBody.message);
+                recordArrivalMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                recordArrivalMutation.reset();
+                navigation.navigate('Login');
+            }
+        }
+        catch (err) {
+            Alert.alert('Error, unable to reach server. Try again later.');
             recordArrivalMutation.reset();
         }
+
     }
     if (recordArrivalMutation.isSuccess) {
         Alert.alert('Arrival recorded');

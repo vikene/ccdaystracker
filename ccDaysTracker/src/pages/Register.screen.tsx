@@ -9,6 +9,7 @@ import {
 import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { SignupDto } from '../DTOs/incoming/signup.dto';
+import { ERROR_CODES } from '../ErrorCodes/errorCodes';
 type Props = {
     navigation: any;
 };
@@ -55,13 +56,19 @@ const RegisterScreen = ({ navigation }: Props) => {
         )
     }
     if (mutation.isError) {
-        let error = mutation.error as Error;
-        let message = JSON.parse(error.message);
-        if (message["statusCode"] === 409) {
-            Alert.alert('User already exists, Please use login.');
-            mutation.reset();
+        try {
+            let message = JSON.parse(JSON.stringify(mutation.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.UserAlreadyExistsException) {
+                Alert.alert('User already exists, Please use login.');
+                mutation.reset();
+            }
+            else {
+                Alert.alert('Failed creating user, Please try again.');
+                mutation.reset();
+            }
         }
-        else {
+        catch (err) {
             Alert.alert('Failed creating user, Please try again.');
             mutation.reset();
         }

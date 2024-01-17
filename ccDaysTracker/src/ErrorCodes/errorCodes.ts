@@ -15,4 +15,7 @@ export const ERROR_CODES = {
     NoValidPasswordStrategyException: 1013,
     UserAlreadyExistsException: 1014,
     UserDoesNotExistsException: 1015,
+    UpdateTravelLogException: 1016,
+    TravelEntitiesOverlapsException: 1017,
+    UnauthorizedException: 1018,
 };

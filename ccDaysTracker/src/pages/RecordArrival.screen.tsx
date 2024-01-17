@@ -85,7 +85,7 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setArrivedOpen(true)
                         }}
-                        value={dateValue}
+                        value={dateArrived.toDateString()}
                     />
                     <DatePicker
                         modal

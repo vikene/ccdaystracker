@@ -1,6 +1,7 @@
 import { Button, Divider, Image, Input, Tab, TabView } from '@rneui/themed';
 import React from 'react';
 import {
+    Alert,
     RefreshControl,
     ScrollView,
     Text,
@@ -10,6 +11,8 @@ import EntityList from './EntityList.component';
 import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { Dialog } from '@rneui/base';
+import { ERROR_CODES } from '../ErrorCodes/errorCodes';
+
 type Props = {
     navigation: any;
 };
@@ -31,6 +34,19 @@ const DashboardScreen = ({ navigation }: Props) => {
                 <Dialog.Loading />
             </Dialog>
         );
+    }
+    if (eligibleDaysQuery.isError) {
+        try {
+            let message = JSON.parse(JSON.stringify(eligibleDaysQuery.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                navigation.navigate('Login');
+            }
+        }
+        catch (e) {
+            Alert.alert('Error, unable to reach server. Try again later.');
+        }
     }
     if (eligibleDaysQuery.isSuccess) {
         let data = JSON.parse(JSON.stringify(eligibleDaysQuery.data));

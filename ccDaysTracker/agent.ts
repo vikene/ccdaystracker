@@ -4,6 +4,7 @@ import { SignupDto } from './src/DTOs/incoming/signup.dto';
 import { ArrivalLogDto } from './src/DTOs/incoming/arrivalLog.dto';
 import { DepartureLogDto } from './src/DTOs/incoming/departureLog.dto';
 import { UserInfoDto } from './src/DTOs/incoming/userInfo.dto';
+import { UpdateTravelLogDto } from './src/DTOs/incoming/updateTravelLog.dto';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 const API_ROOT = "http://localhost:3000";
@@ -62,6 +63,7 @@ const TravelLog = {
     postArrivalLog: (arrivalLog: ArrivalLogDto) => requests.post("/travel-log/arrival", arrivalLog),
     postDepartureLog: (departureLog: DepartureLogDto) => requests.post("/travel-log/departure", departureLog),
     deleteTravelLog: (travelLogId: string) => requests.del(`/travel-log/${travelLogId}`),
+    updateTravelLog: (travelLogId: string, updateTravelLog: UpdateTravelLogDto) => requests.put(`/travel-log/${travelLogId}`, updateTravelLog),
 };
 
 const User = {

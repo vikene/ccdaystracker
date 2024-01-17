@@ -1,21 +1,39 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Button, Divider, FAB, Image, Input, Switch, Tab, TabView } from '@rneui/themed';
+import { Button, Dialog, Input, Switch } from '@rneui/themed';
 import React, { useState } from 'react';
 import {
+    Alert,
     Dimensions,
     ScrollView,
     Text,
     View,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
+import { UpdateTravelLogDto } from '../DTOs/incoming/updateTravelLog.dto';
+import { useMutation, useQueryClient } from 'react-query';
+import agent from "../../agent";
+import { ERROR_CODES } from '../ErrorCodes/errorCodes';
+import { format, parse } from 'date-fns';
+
 
 type Props = {
     navigation: any;
 };
+const formatDate = (dateValue: Date) => {
+    return dateValue.getFullYear() + "-" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "-" + ("0" + dateValue.getDate()).slice(-2)
+}
 const EditEntityScreen = ({ navigation }: Props) => {
     const route: RouteProp<{ params: { TripUniqueId: string, data: any } }, 'params'> = useRoute();
-    const [dateArrived, setArrivedDate] = useState(new Date(Date.parse(route.params.data.ArrivalInCanadaDate)));
+    let queryClient = useQueryClient();
+    const [dateArrived, setArrivedDate] = useState(parse(route.params.data.ArrivalInCanadaDate, "yyyy-MM-dd", new Date()));
     const [openArrived, setArrivedOpen] = useState(false)
+    const [dateDeparted, setDepartedDate] = useState(route.params.data.DepartedCanadaOnDate !== undefined ? parse(route.params.data.DepartedCanadaOnDate, "yyyy-MM-dd", new Date()) : "N/A")
+    const [openDeparted, setDepartedOpen] = useState(false)
+    const [destination, setDestination] = useState(route.params.data.Destination)
+    const [reason, setReason] = useState(route.params.data.ReasonForTravel)
+    const [isPermanentResident, setIsPermanentResident] = useState(route.params.data.IsPermanentResident)
+    const [tripUniqueId, _] = useState(route.params.TripUniqueId)
+
     const handleConfirmArrived = (date: Date) => {
         setArrivedDate(date)
         setArrivedOpen(false)
@@ -23,13 +41,9 @@ const EditEntityScreen = ({ navigation }: Props) => {
     const handleCancelArrived = () => {
         setArrivedOpen(false)
     }
-
-    const [dateDeparted, setDepartedDate] = useState(new Date(Date.parse(route.params.data.DepartedCanadaOnDate)))
-    const [openDeparted, setDepartedOpen] = useState(false)
-    const [destination, setDestination] = useState(route.params.data.Destination)
-    const [reason, setReason] = useState(route.params.data.ReasonForTravel)
-    const [isPermanentResident, setIsPermanentResident] = useState(route.params.data.IsPermanentResident)
-    const [tripUniqueId, _] = useState(route.params.TripUniqueId)
+    let updateTravelLogMutation = useMutation({
+        mutationFn: (updateTravelLog: UpdateTravelLogDto) => agent.TravelLog.updateTravelLog(updateTravelLog.TripUniqueId, updateTravelLog),
+    });
     const handleConfirmDeparted = (date: Date) => {
         setDepartedDate(date)
         setDepartedOpen(false)
@@ -37,6 +51,84 @@ const EditEntityScreen = ({ navigation }: Props) => {
     const handleCancelDeparted = () => {
         setDepartedOpen(false)
     }
+    const updateTrip = () => {
+        if (dateArrived === null || dateDeparted === null) {
+            Alert.alert('Please enter a date');
+            return;
+        }
+        if (dateArrived === undefined || dateDeparted === undefined) {
+            Alert.alert('Please enter a date');
+            return;
+        }
+        if (dateArrived > dateDeparted) {
+            Alert.alert('Arrival date cannot be after departure date');
+            return;
+        }
+
+        let trip: UpdateTravelLogDto = {
+            TripUniqueId: tripUniqueId,
+            ArrivedInCanadaOn: formatDate(dateArrived),
+            DepartedCanadaOn: typeof dateDeparted !== "string" ? formatDate(dateDeparted) : undefined,
+            Destination: destination,
+            ReasonForTravel: reason,
+            IsPermanentResident: isPermanentResident,
+        }
+        updateTravelLogMutation.mutate(trip);
+    }
+    if (updateTravelLogMutation.isLoading) {
+        return (
+            <Dialog isVisible={true} onBackdropPress={() => { }}>
+                <Dialog.Loading />
+            </Dialog>
+        )
+    }
+    if (updateTravelLogMutation.isError) {
+        try {
+            let message = JSON.parse(JSON.stringify(updateTravelLogMutation.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.ArrivalEventOverlapsException) {
+                Alert.alert("Error, arrival event overlaps with another travel log.");
+                updateTravelLogMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.DepartureEventOverlapsException) {
+                Alert.alert("Error, departure event overlaps with another travel log.");
+                updateTravelLogMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.UpdateTravelLogException) {
+                Alert.alert("Failed to update travel log. We are working to resolve this issue.");
+                updateTravelLogMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                updateTravelLogMutation.reset();
+                navigation.navigate('Login');
+            }
+            if (messageBody !== undefined) {
+                Alert.alert("Unknown error has occured. Please try again later.");
+            }
+        }
+        catch (e) {
+            Alert.alert('Error, unable to reach server. Try again later.');
+        }
+        finally {
+            updateTravelLogMutation.reset();
+        }
+    }
+    if (updateTravelLogMutation.isSuccess) {
+        Alert.alert('Trip updated');
+        updateTravelLogMutation.reset();
+        queryClient.invalidateQueries('entityList');
+        queryClient.invalidateQueries('eligibleDays');
+        navigation.navigate('Home');
+    }
+    let departureDate: Date;
+    if (dateDeparted === "N/A" || typeof dateDeparted === "string") {
+        departureDate = new Date();
+    }
+    else {
+        departureDate = dateDeparted;
+    }
+
     return (
         <>
             <ScrollView
@@ -56,7 +148,7 @@ const EditEntityScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setArrivedOpen(true)
                         }}
-                        value={dateArrived.toDateString()}
+                        value={format(dateArrived, 'MMM dd, yyyy')}
                     />
                     <DatePicker
                         modal
@@ -64,6 +156,7 @@ const EditEntityScreen = ({ navigation }: Props) => {
                         date={dateArrived}
                         onConfirm={handleConfirmArrived}
                         onCancel={handleCancelArrived}
+                        mode='date'
                     />
                     <Input
                         placeholder="mm/dd/yyyy"
@@ -72,14 +165,15 @@ const EditEntityScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setDepartedOpen(true)
                         }}
-                        value={dateDeparted.toDateString()}
+                        value={dateDeparted === "N/A" ? "N/A" : format(dateDeparted, 'MMM dd, yyyy')}
                     />
                     <DatePicker
                         modal
                         open={openDeparted}
-                        date={dateDeparted}
+                        date={departureDate}
                         onConfirm={handleConfirmDeparted}
                         onCancel={handleCancelDeparted}
+                        mode='date'
                     />
                     <Input
                         placeholder="Italy"
@@ -115,7 +209,7 @@ const EditEntityScreen = ({ navigation }: Props) => {
                         />
                     </View>
                     <Button
-                        title="Edit Trip"
+                        title="Update Trip"
                         buttonStyle={{
                             backgroundColor: 'black',
                             borderWidth: 2,
@@ -128,6 +222,7 @@ const EditEntityScreen = ({ navigation }: Props) => {
                             marginVertical: 10,
                         }}
                         titleStyle={{ fontWeight: 'bold' }}
+                        onPress={updateTrip}
                     />
                 </View>
             </ScrollView>

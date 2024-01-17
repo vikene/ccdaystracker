@@ -78,7 +78,7 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
                             e.currentTarget.blur();
                             setDepartedOpen(true)
                         }}
-                        value={dateValue}
+                        value={dateDeparted.toDateString()}
                     />
                     <DatePicker
                         modal

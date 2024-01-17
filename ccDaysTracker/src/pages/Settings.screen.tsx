@@ -9,12 +9,14 @@ import {
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import agent from "../../agent";
 import { UserInfoDto } from '../DTOs/incoming/userInfo.dto';
-
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+const storage = new MMKVLoader().initialize();
 type Props = {
     navigation: any;
 };
 const SettingsScreen = ({ navigation }: Props) => {
     let queryClient = useQueryClient();
+    const [authToken, setAuthToken] = useMMKVStorage('authenticationToken', storage, '');
     const settingsQuery = useQuery('userInfo', () => agent.User.getCurrentUserInfo());
     const userInfoMutation = useMutation({
         mutationFn: (userInfo: UserInfoDto) => agent.User.updateUserInfo(userInfo),
@@ -30,7 +32,13 @@ const SettingsScreen = ({ navigation }: Props) => {
             setIsPermanentResident(settingsQuery.data.IsPermanentResident);
         }
     }, settingsQuery.data);
-
+    const logout = () => {
+        setAuthToken('');
+        agent.setToken('');
+        queryClient.invalidateQueries('authenticationState');
+        Alert.alert('Successfully logged out');
+        navigation.navigate('Login');
+    }
     const submit = () => {
         if (fullName === '' || email === '') {
             Alert.alert('Error, full name and email are required.');
@@ -189,6 +197,22 @@ const SettingsScreen = ({ navigation }: Props) => {
                                 />
                             </View>
                         }
+                        <Button
+                            title="Log out"
+                            buttonStyle={{
+                                backgroundColor: 'red',
+                                borderWidth: 2,
+                                borderColor: 'white',
+                                borderRadius: 30,
+                            }}
+                            containerStyle={{
+                                width: 200,
+                                marginHorizontal: 50,
+                                marginVertical: 10,
+                            }}
+                            titleStyle={{ fontWeight: 'bold' }}
+                            onPress={logout}
+                        />
                     </View>
                 </ScrollView>
             </>

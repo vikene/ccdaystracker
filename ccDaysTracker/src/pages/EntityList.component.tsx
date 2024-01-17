@@ -1,9 +1,11 @@
 import { Dialog, Text } from "@rneui/themed";
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import agent from "../../agent";
 import { useQuery } from "react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
+import { format, parse } from "date-fns";
+import { ERROR_CODES } from "../ErrorCodes/errorCodes";
 type Props = {
     navigation: any;
 };
@@ -19,6 +21,19 @@ const EntityList = ({ navigation }: Props) => {
             </Dialog>
         );
     }
+    if (entityListQuery.isError) {
+        try {
+            let message = JSON.parse(JSON.stringify(entityListQuery.error));
+            let messageBody = message.response.body;
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                navigation.navigate('Login');
+            }
+        }
+        catch (e) {
+            Alert.alert('Error, unable to reach server. Try again later.');
+        }
+    }
     if (entityListQuery.isSuccess) {
         let data = JSON.parse(JSON.stringify(entityListQuery.data));
         let events = data["Events"];
@@ -31,6 +46,11 @@ const EntityList = ({ navigation }: Props) => {
             <SafeAreaView style={{ flex: 1 }}>
                 {
                     events.map((item: any) => {
+                        let arrivedDate = parse(item.ArrivalInCanadaDate, "yyyy-MM-dd", new Date());
+                        let departedDate = undefined;
+                        if (item.DepartedCanadaOnDate !== undefined) {
+                            departedDate = parse(item.DepartedCanadaOnDate, "yyyy-MM-dd", new Date());
+                        }
                         return (
                             <>
                                 <TouchableOpacity
@@ -57,8 +77,8 @@ const EntityList = ({ navigation }: Props) => {
                                             <Text style={{ fontSize: 20, fontWeight: '600' }}>Days: {item.Days}</Text>
                                             <Text style={{ fontSize: 15, fontWeight: '400', alignSelf: "flex-end", color: "#333" }}>Status: {(item.IsPermanentResident === true) ? "PR" : "TRV"}</Text>
                                         </View>
-                                        <Text style={{ fontSize: 15, fontWeight: '400' }}>Arrived: {item.ArrivalInCanadaDate}</Text>
-                                        <Text style={{ fontSize: 15, fontWeight: '400' }}>Departed: {item.DepartedCanadaOnDate}</Text>
+                                        <Text style={{ fontSize: 15, fontWeight: '400' }}>Arrived: {format(arrivedDate, "MMM dd yyyy")}</Text>
+                                        <Text style={{ fontSize: 15, fontWeight: '400' }}>Departed: {departedDate !== undefined ? format(departedDate, "MMM dd yyyy") : "N/A"}</Text>
                                     </View>
                                 </TouchableOpacity>
                             </>);

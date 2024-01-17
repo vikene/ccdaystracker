@@ -12,6 +12,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import agent from '../../agent';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ERROR_CODES } from '../ErrorCodes/errorCodes';
+import { format, parse } from 'date-fns';
 
 type Props = {
     navigation: any;
@@ -90,6 +91,12 @@ const ViewEntryScreen = ({ navigation }: Props) => {
         }
     }
     if (viewTripQuery.isSuccess) {
+        let arrivalDate = parse(viewTripQuery.data.ArrivalInCanadaDate, "yyyy-MM-dd", new Date());
+        let departureDate = undefined;
+        if (viewTripQuery.data.DepartedCanadaOnDate != undefined) {
+            departureDate = parse(viewTripQuery.data.DepartedCanadaOnDate, "yyyy-MM-dd", new Date());
+        }
+
         return (
             <>
                 <ScrollView
@@ -121,13 +128,13 @@ const ViewEntryScreen = ({ navigation }: Props) => {
                                 fontSize: 20,
                                 fontWeight: '400',
                             }}>
-                                Arrived in Canada: {viewTripQuery.data.ArrivalInCanadaDate}
+                                Arrived: {format(arrivalDate, "MMM dd, yyyy")}
                             </Text>
                             <Text style={{
                                 fontSize: 20,
                                 fontWeight: '400',
                             }}>
-                                Departed from Canada: {viewTripQuery.data.DepartedCanadaOnDate}
+                                Departed: {departureDate !== undefined ? format(departureDate, "MMM dd, yyyy") : "N/A"}
                             </Text>
                             <Text style={{
                                 fontSize: 20,

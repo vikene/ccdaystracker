@@ -1,8 +1,7 @@
-import { Button, Dialog, Divider, FAB, Image, Input, SpeedDial, Tab, TabView } from '@rneui/themed';
-import React from 'react';
+import { Dialog, SpeedDial, Tab, TabView } from '@rneui/themed';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
-    Text
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';
@@ -27,6 +26,13 @@ const HomeScreen = ({ navigation }: Props) => {
         return agent.Authentication.current();
     });
 
+    const setHasTokenExpired = () => {
+        console.log("Token has expired!");
+        storage.removeItem('authenticationToken');
+        navigation.navigate("Login");
+    }
+
+
     if (isLoading) return (
         <Dialog isVisible={true}>
             <Dialog.Loading />
@@ -40,7 +46,19 @@ const HomeScreen = ({ navigation }: Props) => {
                 if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                     navigation.navigate('Login');
                 }
-                Alert.alert(error.message);
+                if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                    Alert.alert("Error, token expired. Please log in again.");
+                    storage.removeItem('authenticationToken');
+                    agent.removeToken();
+                    navigation.navigate('Login');
+                }
+                if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                    || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                    Alert.alert("Error, token invalid. Please log in again.");
+                    storage.removeItem('authenticationToken');
+                    agent.removeToken();
+                    navigation.navigate('Login');
+                }
             }
             catch (e) {
                 Alert.alert('Error, unable to reach server. Will retry in 5 seconds.');
@@ -56,10 +74,10 @@ const HomeScreen = ({ navigation }: Props) => {
             <>
                 <TabView value={index} onChange={setIndex} animationType="spring">
                     <TabView.Item style={{ width: '100%' }}>
-                        <DashboardScreen navigation={navigation} />
+                        <DashboardScreen navigation={navigation} setHasTokenExpired={setHasTokenExpired} />
                     </TabView.Item>
                     <TabView.Item style={{ width: '100%' }}>
-                        <SettingsScreen navigation={navigation} />
+                        <SettingsScreen navigation={navigation} setHasTokenExpired={setHasTokenExpired} />
                     </TabView.Item>
                 </TabView>
                 <SpeedDial

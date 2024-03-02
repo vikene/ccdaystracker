@@ -11,11 +11,13 @@ import agent from "../../agent";
 import { UserInfoDto } from '../DTOs/incoming/userInfo.dto';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { ERROR_CODES } from '../ErrorCodes/errorCodes';
+
 const storage = new MMKVLoader().initialize();
 type Props = {
     navigation: any;
+    setHasTokenExpired: any;
 };
-const SettingsScreen = ({ navigation }: Props) => {
+const SettingsScreen = ({ navigation, setHasTokenExpired }: Props) => {
     let queryClient = useQueryClient();
     const [authToken, setAuthToken] = useMMKVStorage('authenticationToken', storage, '');
     const settingsQuery = useQuery('userInfo', () => agent.User.getCurrentUserInfo());
@@ -34,7 +36,7 @@ const SettingsScreen = ({ navigation }: Props) => {
         }
     }, settingsQuery.data);
     const logout = () => {
-        setAuthToken('');
+        storage.removeItem('authenticationToken');
         agent.setToken('');
         queryClient.invalidateQueries('authenticationState');
         Alert.alert('Successfully logged out');
@@ -93,6 +95,14 @@ const SettingsScreen = ({ navigation }: Props) => {
             let message = JSON.parse(JSON.stringify(settingsQuery.error));
             let messageBody = message.response.body;
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                setHasTokenExpired();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                Alert.alert("Error, token invalid. Please log in again.");
                 navigation.navigate('Login');
             }
             return <Text>

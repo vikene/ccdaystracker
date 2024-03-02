@@ -18,4 +18,7 @@ export const ERROR_CODES = {
     UpdateTravelLogException: 1016,
     TravelEntitiesOverlapsException: 1017,
     UnauthorizedException: 1018,
+    TokenExpiredException: 1019,
+    NotBeforeException: 1020,
+    JsonWebTokenException: 1021
 };

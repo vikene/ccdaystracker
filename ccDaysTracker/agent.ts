@@ -8,6 +8,7 @@ import { UpdateTravelLogDto } from './src/DTOs/incoming/updateTravelLog.dto';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 const API_ROOT = "http://localhost:3000";
+// "https://stage-trackerbackend.onrender.com";
 const responsebody = (res: Response) => res.body;
 let token: string | null = null;
 const tokenPlugin = (req: Request) => {
@@ -75,7 +76,10 @@ var _export_agent = {
     Authentication,
     TravelLog,
     User,
-    setToken: (_token: string) => { token = _token; }
+    setToken: (_token: string) => { token = _token; },
+    removeToken: () => {
+        token = null;
+    }
 };
 
 export default _export_agent;

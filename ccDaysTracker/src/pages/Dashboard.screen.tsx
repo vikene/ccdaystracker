@@ -15,8 +15,9 @@ import { ERROR_CODES } from '../ErrorCodes/errorCodes';
 
 type Props = {
     navigation: any;
+    setHasTokenExpired: any;
 };
-const DashboardScreen = ({ navigation }: Props) => {
+const DashboardScreen = ({ navigation, setHasTokenExpired }: Props) => {
     const [refreshing, setRefreshing] = React.useState(false);
     const queryClient = useQueryClient();
     const onRefresh = React.useCallback(() => {
@@ -40,8 +41,14 @@ const DashboardScreen = ({ navigation }: Props) => {
             let message = JSON.parse(JSON.stringify(eligibleDaysQuery.error));
             let messageBody = message.response.body;
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
-                Alert.alert("Error, unauthorized. Please log in again.");
-                navigation.navigate('Login');
+                setHasTokenExpired();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                setHasTokenExpired();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                setHasTokenExpired();
             }
         }
         catch (e) {
@@ -188,7 +195,7 @@ const DashboardScreen = ({ navigation }: Props) => {
                         >
                             Travel logs
                         </Text>
-                        <EntityList navigation={navigation} />
+                        <EntityList navigation={navigation} setHasTokenExpired={setHasTokenExpired} />
                     </View>
                 </ScrollView>
             </>

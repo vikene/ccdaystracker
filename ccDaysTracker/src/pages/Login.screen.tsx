@@ -24,6 +24,7 @@ const LoginScreen = ({ navigation }: Props) => {
     })
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+
     const submit = () => {
         if (email === '') {
             Alert.alert('Please enter your email');
@@ -60,6 +61,19 @@ const LoginScreen = ({ navigation }: Props) => {
                 loginMutation.reset();
                 return;
             }
+            if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
+                Alert.alert("Error, unauthorized. Please log in again.");
+                loginMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                Alert.alert("Error, token expired. Please log in again.");
+                loginMutation.reset();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                Alert.alert("Error, token invalid. Please log in again.");
+                loginMutation.reset();
+            }
         }
         catch (e) {
             Alert.alert('Error, unable to reach server. Try again later.');
@@ -69,13 +83,15 @@ const LoginScreen = ({ navigation }: Props) => {
     if (loginMutation.isSuccess) {
         let data = JSON.parse(JSON.stringify(loginMutation.data));
         let tokenString: string = data["token"];
+        console.log("HERE - at login success!")
         agent.setToken(tokenString);
         setAuthToken(tokenString);
         loginMutation.reset();
-        queryClient.invalidateQueries('authenticationState');
+        queryClient.resetQueries();
         navigation.navigate('Home');
     }
-    if (authToken !== '') {
+    else if (authToken !== '') {
+        queryClient.resetQueries();
         navigation.navigate('Home');
         agent.setToken(authToken);
     }

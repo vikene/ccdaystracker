@@ -6,9 +6,11 @@ import { DepartureLogDto } from "../DTOs/incoming/departureLog.dto";
 import agent from "../../agent";
 import { useMutation, useQueryClient } from "react-query";
 import { ERROR_CODES } from "../ErrorCodes/errorCodes";
+
 const formatDate = (dateValue: Date) => {
     return dateValue.getFullYear() + "-" + ("0" + (dateValue.getMonth() + 1)).slice(-2) + "-" + ("0" + dateValue.getDate()).slice(-2)
 }
+
 type Props = {
     navigation: any;
 };
@@ -48,6 +50,17 @@ const RecordDepartureScreen = ({ navigation }: Props) => {
             }
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                 Alert.alert("Error, unauthorized. Please log in again.");
+                recordDepartureMutation.reset();
+                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                Alert.alert("Error, token expired. Please log in again.");
+                recordDepartureMutation.reset();
+                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                Alert.alert("Error, token invalid. Please log in again.");
                 recordDepartureMutation.reset();
                 navigation.navigate('Login');
             }

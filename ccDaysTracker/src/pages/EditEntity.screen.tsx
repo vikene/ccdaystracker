@@ -15,7 +15,6 @@ import agent from "../../agent";
 import { ERROR_CODES } from '../ErrorCodes/errorCodes';
 import { format, parse } from 'date-fns';
 
-
 type Props = {
     navigation: any;
 };
@@ -101,7 +100,18 @@ const EditEntityScreen = ({ navigation }: Props) => {
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                 Alert.alert("Error, unauthorized. Please log in again.");
                 updateTravelLogMutation.reset();
-                navigation.navigate('Login');
+                queryClient.invalidateQueries('authenticationState');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                Alert.alert("Error, token expired. Please log in again.");
+                updateTravelLogMutation.reset();
+                queryClient.invalidateQueries('authenticationState');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                Alert.alert("Error, token invalid. Please log in again.");
+                updateTravelLogMutation.reset();
+                queryClient.invalidateQueries('authenticationState');
             }
             if (messageBody !== undefined) {
                 Alert.alert("Unknown error has occured. Please try again later.");

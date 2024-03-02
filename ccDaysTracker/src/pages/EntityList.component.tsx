@@ -1,15 +1,17 @@
 import { Dialog, Text } from "@rneui/themed";
 import { Alert, TouchableOpacity, View } from "react-native";
 import agent from "../../agent";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { format, parse } from "date-fns";
 import { ERROR_CODES } from "../ErrorCodes/errorCodes";
+
 type Props = {
     navigation: any;
+    setHasTokenExpired: any;
 };
-const EntityList = ({ navigation }: Props) => {
+const EntityList = ({ navigation, setHasTokenExpired }: Props) => {
     const entityListQuery = useQuery(
         'entityList',
         () => agent.TravelLog.getTravelLogs(),
@@ -27,7 +29,13 @@ const EntityList = ({ navigation }: Props) => {
             let messageBody = message.response.body;
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                 Alert.alert("Error, unauthorized. Please log in again.");
-                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                setHasTokenExpired();
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                setHasTokenExpired();
             }
         }
         catch (e) {
@@ -55,6 +63,7 @@ const EntityList = ({ navigation }: Props) => {
                             <>
                                 <TouchableOpacity
                                     onPress={() => onEntityItemPress(item.TripUniqueId)}
+                                    key={item.TripUniqueId}
                                 >
                                     <View
                                         style={{
@@ -66,6 +75,7 @@ const EntityList = ({ navigation }: Props) => {
                                             gap: 10,
                                             padding: 15
                                         }}
+                                        key={item.TripUniqueId}
                                     >
                                         <View style={{
                                             flex: 1,

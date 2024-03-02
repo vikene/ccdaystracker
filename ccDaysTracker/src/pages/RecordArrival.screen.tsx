@@ -6,6 +6,7 @@ import agent from "../../agent";
 import { ArrivalLogDto } from "../DTOs/incoming/arrivalLog.dto";
 import { useMutation, useQueryClient } from "react-query";
 import { ERROR_CODES } from "../ErrorCodes/errorCodes";
+
 type Props = {
     navigation: any;
 };
@@ -47,6 +48,17 @@ const RecordArrivalScreen = ({ navigation }: Props) => {
             }
             if (messageBody.appStatusCode === ERROR_CODES.UnauthorizedException) {
                 Alert.alert("Error, unauthorized. Please log in again.");
+                recordArrivalMutation.reset();
+                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.TokenExpiredException) {
+                Alert.alert("Error, token expired. Please log in again.");
+                recordArrivalMutation.reset();
+                navigation.navigate('Login');
+            }
+            if (messageBody.appStatusCode === ERROR_CODES.JsonWebTokenException
+                || messageBody.appStatusCode === ERROR_CODES.NotBeforeException) {
+                Alert.alert("Error, token invalid. Please log in again.");
                 recordArrivalMutation.reset();
                 navigation.navigate('Login');
             }

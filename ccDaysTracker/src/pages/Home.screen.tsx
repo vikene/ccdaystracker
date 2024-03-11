@@ -1,7 +1,7 @@
 import { Dialog, SpeedDial, Tab, TabView } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
+    Alert, StatusBar,
 } from 'react-native';
 import DashboardScreen from './Dashboard.screen';
 import SettingsScreen from './Settings.screen';

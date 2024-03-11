@@ -42,7 +42,7 @@ function App(): React.JSX.Element {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Homer' }} />
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
           <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Canadian Citizenship Days Tracker' }} />
           <Stack.Screen name="RecordArrival" component={RecordArrivalScreen} options={{ title: 'Add Arrival Record', headerShown: true }} />
           <Stack.Screen name="RecordDeparture" component={RecordDepartureScreen} options={{ title: 'Add Departure Record', headerShown: true }} />

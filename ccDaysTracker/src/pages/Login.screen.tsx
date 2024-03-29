@@ -129,8 +129,8 @@ const LoginScreen = ({ navigation }: Props) => {
                 alignItems: 'center',
             }}
             >
-                <Input placeholder='Email' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} onChangeText={(email) => setEmail(email)} />
-                <Input placeholder='Password' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
+                <Input placeholder='Email' autoCapitalize='none' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} onChangeText={(email) => setEmail(email.toLowerCase())} />
+                <Input placeholder='Password' autoCapitalize='none' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} secureTextEntry={true} onChangeText={(password) => setPassword(password)} />
                 <View style={{
                     flex: 1,
                     justifyContent: 'center',

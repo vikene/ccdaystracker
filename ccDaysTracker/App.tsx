@@ -27,6 +27,11 @@ import ViewEntryScreen from './src/pages/ViewEntry.screen';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import RecordArrivalScreen from './src/pages/RecordArrival.screen';
 import RecordDepartureScreen from './src/pages/RecordDeparture.screen';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://dba69a4e368cb4be15c31ced58baa36c@o4506893282377728.ingest.us.sentry.io/4506893290438656',
+});
 
 const Stack = createNativeStackNavigator();
 

@@ -51,7 +51,7 @@ const EntityList = ({ navigation, setHasTokenExpired }: Props) => {
         }
 
         return (
-            <SafeAreaView style={{ flex: 1, marginTop: -30 }}>
+            <SafeAreaView style={{ flex: 1, marginTop: '-5%' }}>
                 {
                     events.map((item: any) => {
                         let arrivedDate = parse(item.ArrivalInCanadaDate, "yyyy-MM-dd", new Date());

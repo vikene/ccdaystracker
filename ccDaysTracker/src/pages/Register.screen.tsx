@@ -115,8 +115,8 @@ const RegisterScreen = ({ navigation }: Props) => {
             }}
             >
                 <Input placeholder='Full name' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} onChangeText={text => setFullName(text)} />
-                <Input placeholder='Email' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} onChangeText={text => setEmail(text)} />
-                <Input placeholder='Password' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} secureTextEntry={true} onChangeText={password => setPassword(password)} />
+                <Input placeholder='Email' autoCapitalize='none' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} onChangeText={text => setEmail(text.toLowerCase())} />
+                <Input placeholder='Password' autoCapitalize='none' inputContainerStyle={{ marginLeft: 15, marginRight: 15, marginTop: 10 }} secureTextEntry={true} onChangeText={password => setPassword(password)} />
                 <View
                     style={{
                         flex: 1,

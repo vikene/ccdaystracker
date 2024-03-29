@@ -7,8 +7,8 @@ import { UserInfoDto } from './src/DTOs/incoming/userInfo.dto';
 import { UpdateTravelLogDto } from './src/DTOs/incoming/updateTravelLog.dto';
 
 const superagent = superagentPromise(_superagent, global.Promise);
-const API_ROOT = "http://localhost:3000";
-// "https://stage-trackerbackend.onrender.com";
+const API_ROOT = "https://stage-trackerbackend.onrender.com";
+// "";
 const responsebody = (res: Response) => res.body;
 let token: string | null = null;
 const tokenPlugin = (req: Request) => {

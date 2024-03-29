@@ -1067,6 +1067,14 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - RNSentry (5.19.2):
+    - hermes-engine
+    - React-Core
+    - React-hermes
+    - Sentry/HybridSDK (= 8.20.0)
+  - Sentry/HybridSDK (8.20.0):
+    - SentryPrivate (= 8.20.0)
+  - SentryPrivate (8.20.0)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -1125,6 +1133,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1133,6 +1142,8 @@ SPEC REPOS:
     - libevent
     - MMKV
     - MMKVCore
+    - Sentry
+    - SentryPrivate
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1239,6 +1250,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1298,6 +1311,9 @@ SPEC CHECKSUMS:
   React-utils: 987a4526a2fc0acdfaf87888adfe0bf9d0452066
   ReactCommon: 2947b0bffd82ea0e58ca7928881152d4c6dae9af
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
+  RNSentry: cf33c5a6cac0f2092047e529a255d51e45982e23
+  Sentry: a8d7b373b9f9868442b02a0c425192f693103cbf
+  SentryPrivate: 006b24af16828441f70e2ab6adf241bd0a8ad130
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 

@@ -12,6 +12,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import agent from '../../agent';
 import { Dialog } from '@rneui/base';
 import { ERROR_CODES } from '../ErrorCodes/errorCodes';
+import * as Sentry from "@sentry/react-native";
 
 type Props = {
     navigation: any;
